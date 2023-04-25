@@ -14,7 +14,7 @@
 # limitations under the License.
 
 set -e
-ARCH=${ARCH:-x86_64}
+ARCH=${ARCH:-aarch64}
 
 # If rustup not exist, install it.
 command -v rustup || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

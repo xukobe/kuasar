@@ -12,8 +12,8 @@ bin/vmm-sandboxer:
 	@mkdir -p bin && cp vmm/target/release/vmm-sandboxer bin/vmm-sandboxer 
 
 bin/vmm-task:
-	@cd vmm/task && cargo build --release --target=x86_64-unknown-linux-musl
-	@mkdir -p bin && cp vmm/target/x86_64-unknown-linux-musl/release/vmm-task bin/vmm-task
+	@cd vmm/task && cargo build --release --target=aarch64-unknown-linux-musl
+	@mkdir -p bin && cp vmm/target/aarch64-unknown-linux-musl/release/vmm-task bin/vmm-task
 
 bin/vmlinux.bin:
 	@bash -x vmm/scripts/kernel/${HYPERVISOR}/build.sh ${KERNEL_VERSION}
@@ -38,7 +38,7 @@ bin/quark-sandboxer:
 wasm: bin/wasm-sandboxer
 quark: bin/quark-sandboxer
 
-ifeq ($(HYPERVISOR), "stratovirt")
+ifeq ($(HYPERVISOR), stratovirt)
 vmm: bin/vmm-sandboxer bin/kuasar.initrd bin/vmlinux.bin
 else
 vmm: bin/vmm-sandboxer bin/kuasar.img bin/vmlinux.bin
@@ -50,12 +50,12 @@ clean:
 	@cd wasm && cargo clean
 	@cd quark && cargo clean
 
-ifeq ($(HYPERVISOR), "stratovirt")
+ifeq ($(HYPERVISOR), stratovirt)
 install-vmm:
 	@install -p -m 755 bin/vmm-sandboxer /usr/local/bin/vmm-sandboxer
 	@install -d /var/lib/kuasar
 	@install -p -m 644 bin/vmlinux.bin /var/lib/kuasar/vmlinux.bin
-	@install -p -m 644 bin/kuasar.img /var/lib/kuasar/kuasar.initrd
+	@install -p -m 644 bin/kuasar.initrd /var/lib/kuasar/kuasar.initrd
 	@install -p -m 644 vmm/sandbox/config_stratovirt.toml /var/lib/kuasar/config_stratovirt.toml
 else
 install-vmm:

@@ -77,6 +77,8 @@ case "${CONTAINER_RUNTIME}" in
 		;;
 esac
 
+echo "build type: $1"
+
 case "$1" in
 	image)
 		bash -x ${REPO_DIR}/vmm/scripts/image/build_image.sh

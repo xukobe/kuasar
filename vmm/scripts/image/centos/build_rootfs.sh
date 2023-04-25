@@ -38,15 +38,20 @@ make_vmm_task() {
     pushd ${repo_dir}
     source vmm/scripts/image/install_rust.sh
 
+    rm -rf vmm/target
+
     make bin/vmm-task
     popd
 }
 
 build_runc() {
     local repo_dir="$1"
-    rpm --import https://mirror.go-repo.io/centos/RPM-GPG-KEY-GO-REPO
-    curl -s https://mirror.go-repo.io/centos/go-repo.repo | tee /etc/yum.repos.d/go-repo.repo
-    yum install -y golang make
+    yum install -y wget
+    wget https://dl.google.com/go/go1.20.3.linux-arm64.tar.gz
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.3.linux-arm64.tar.gz
+    rm -rf go1.20.3.linux-arm64.tar.gz
+    GOROOT=/usr/local/go
+    PATH=${GOROOT}/bin:$PATH
     mkdir -p /tmp/gopath
     GOPATH=/tmp/gopath go install github.com/opencontainers/runc@v1.1.6
     cp /tmp/gopath/bin/runc ${repo_dir}/bin/
